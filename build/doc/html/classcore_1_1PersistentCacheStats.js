@@ -1,0 +1,28 @@
+var classcore_1_1PersistentCacheStats =
+[
+    [ "Histogram", "classcore_1_1PersistentCacheStats.html#a90fde6aead15200ac8d8cb0a0949f71a", null ],
+    [ "HistogramBounds", "classcore_1_1PersistentCacheStats.html#a838ccfa696e38575e8a6762cbea92548", null ],
+    [ "PersistentCacheStats", "classcore_1_1PersistentCacheStats.html#a4047b6c2227d0580e6fa2a14e517ac1c", null ],
+    [ "PersistentCacheStats", "classcore_1_1PersistentCacheStats.html#a1b76407bda919c993295508288f47326", null ],
+    [ "PersistentCacheStats", "classcore_1_1PersistentCacheStats.html#a53e2d84556c59d60c212792af81906c9", null ],
+    [ "cache_path", "classcore_1_1PersistentCacheStats.html#a0257b42a9042066499ab85032e25ff55", null ],
+    [ "histogram", "classcore_1_1PersistentCacheStats.html#ac7c6697b458f3b1b2cd8717fe743d1fd", null ],
+    [ "hits", "classcore_1_1PersistentCacheStats.html#a2671869094a8cc800a5c58d926be6711", null ],
+    [ "hits_since_last_miss", "classcore_1_1PersistentCacheStats.html#a2de4f7c1715f8fc584af87177e67cb98", null ],
+    [ "longest_hit_run", "classcore_1_1PersistentCacheStats.html#adb82b4843eb3b9aa7dd34aa24be1166f", null ],
+    [ "longest_hit_run_time", "classcore_1_1PersistentCacheStats.html#a351a01992481071dd5a35e07a30da7c0", null ],
+    [ "longest_miss_run", "classcore_1_1PersistentCacheStats.html#a062c4b2c8649497c3963b37ec8105847", null ],
+    [ "longest_miss_run_time", "classcore_1_1PersistentCacheStats.html#ace130517b2852ffa4d7428d026ec8a7c", null ],
+    [ "lru_evictions", "classcore_1_1PersistentCacheStats.html#afcbb52bf5d61651303d48a7dc0077b4d", null ],
+    [ "max_size_in_bytes", "classcore_1_1PersistentCacheStats.html#a4b075968d8f4c372eeff9ebeb8dc44fb", null ],
+    [ "misses", "classcore_1_1PersistentCacheStats.html#a69b19e8821ee36f544494aaaa38508db", null ],
+    [ "misses_since_last_hit", "classcore_1_1PersistentCacheStats.html#afca6329aa28c89c44cb4385e25c271fa", null ],
+    [ "most_recent_hit_time", "classcore_1_1PersistentCacheStats.html#aa6ed7bec101d795691b87e66b3512253", null ],
+    [ "most_recent_miss_time", "classcore_1_1PersistentCacheStats.html#a1dd98bd7ce0454ad0bacb915438eca04", null ],
+    [ "operator=", "classcore_1_1PersistentCacheStats.html#a946e2ac0e7109e8a82a9695e8fe47add", null ],
+    [ "operator=", "classcore_1_1PersistentCacheStats.html#a3fdac794de944c23dbef44a03f67b8f8", null ],
+    [ "policy", "classcore_1_1PersistentCacheStats.html#a317c1b75e4e5d224aab54772fc9300c7", null ],
+    [ "size", "classcore_1_1PersistentCacheStats.html#ac591b24823aaae5d3b6a27044ef93568", null ],
+    [ "size_in_bytes", "classcore_1_1PersistentCacheStats.html#a4f26a154a4639f02764e9c228ccab683", null ],
+    [ "ttl_evictions", "classcore_1_1PersistentCacheStats.html#a95a731834af7c403873bb152b78299f6", null ]
+];
