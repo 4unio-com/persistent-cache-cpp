@@ -121,6 +121,8 @@ add_doxygen(
         "${CMAKE_SOURCE_DIR}/include"  # TODO: HACK to avoid warning. See bug 1476487
     ALL
 )
+install(DIRECTORY ${CMAKE_BINARY_DIR}/doc/html
+        DESTINATION share/doc/${LIBNAME})
 
 # TODO: Below is the way doc can be generated without using add_doxygen() from cmake-extras.
 #       This avoids re-building the doc even though nothing is out of date.
