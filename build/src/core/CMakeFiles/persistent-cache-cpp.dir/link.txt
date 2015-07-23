@@ -1,2 +1,0 @@
-/usr/bin/ar cq libpersistent-cache-cpp.a  CMakeFiles/persistent-cache-cpp.dir/internal/persistent_string_cache_impl.cpp.o CMakeFiles/persistent-cache-cpp.dir/persistent_cache_stats.cpp.o CMakeFiles/persistent-cache-cpp.dir/persistent_string_cache.cpp.o
-/usr/bin/ranlib libpersistent-cache-cpp.a

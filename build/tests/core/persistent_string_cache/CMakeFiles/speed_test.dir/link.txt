@@ -1,1 +1,0 @@
-/usr/lib/ccache/c++    --std=c++11 -Wall -pedantic -Wextra -Wcast-align -Wcast-qual -Wformat -Wredundant-decls -Wswitch-default -Wnon-virtual-dtor -Wctor-dtor-privacy -Wold-style-cast -g   CMakeFiles/speed_test.dir/speed_test.cpp.o  -o speed_test -rdynamic ../../../src/core/libpersistent-cache-cpp.a -lboost_filesystem -lboost_system -lleveldb ../../libgtest.a -lleveldb -lpthread 
