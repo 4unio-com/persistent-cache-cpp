@@ -1,0 +1,14 @@
+Source: persistent-cache-cpp-dev
+Priority: optional
+Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+Build-Depends: libleveldb-dev
+Depends: libleveldb1
+Standards-Version: 3.9.5
+XS-Testsuite: autopkgtest
+Section: libs
+Homepage: https://launchpad.net/persistent-cache-cpp
+# if you don't have have commit access to this branch but would like to upload
+# directly to Ubuntu, don't worry: your changes will be merged back into the
+# upstream branch
+Vcs-Bzr: lp:persistent-cache-cpp
+Vcs-Browser: https://code.launchpad.net/persistent-cache-cpp
