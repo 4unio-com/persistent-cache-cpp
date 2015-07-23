@@ -10,3 +10,6 @@ set(CACHE_SRC
 
 add_library(${LIBNAME} STATIC ${CACHE_SRC})
 target_link_libraries(${LIBNAME} ${LEVELDB})
+
+install(TARGETS ${LIBNAME}
+        DESTINATION ${LIBDIR})

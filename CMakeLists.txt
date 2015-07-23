@@ -1,8 +1,13 @@
+cmake_minimum_required(VERSION 2.8.11)
+
+# Default install location. Must be set here, before setting the project.
+if (NOT DEFINED CMAKE_INSTALL_PREFIX)
+    set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/install CACHE PATH "" FORCE)
+endif()
+
 project(persistent-cache-cpp C CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-
-cmake_minimum_required(VERSION 2.8.11)
 
 set(LIBNAME persistent-cache-cpp)
 
@@ -80,6 +85,7 @@ find_package(Threads REQUIRED)
 include_directories(include)
 
 add_subdirectory(src)
+add_subdirectory(include)
 add_subdirectory(tests)
 
 enable_coverage_report(
