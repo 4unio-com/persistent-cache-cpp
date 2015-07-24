@@ -11,6 +11,11 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(LIBNAME persistent-cache-cpp)
 
+set(VERSION_MAJOR 1)
+set(VERSION_MINOR 0)
+set(VERSION_MICRO 0)
+set(LIBVERSION "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_MICRO}")
+
 string(TOLOWER "${CMAKE_BUILD_TYPE}" cmake_build_type_lower) # Build types should always be lower case
 
 set(ACCEPTED_BUILD_TYPES "" none release debug relwithdebinfo coverage)
@@ -87,6 +92,7 @@ include_directories(include)
 add_subdirectory(src)
 add_subdirectory(include)
 add_subdirectory(tests)
+add_subdirectory(data)
 
 enable_coverage_report(
     TARGETS
