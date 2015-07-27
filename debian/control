@@ -5,7 +5,7 @@ Build-Depends: cmake-extras,
                debhelper (>= 9),
                libleveldb-dev
 Standards-Version: 3.9.6
-#XS-Testsuite: autopkgtest
+XS-Testsuite: autopkgtest
 Section: libs
 Homepage: https://launchpad.net/persistent-cache-cpp
 # if you don't have have commit access to this branch but would like to upload
