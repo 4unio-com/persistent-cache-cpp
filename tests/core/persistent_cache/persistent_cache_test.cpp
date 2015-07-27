@@ -43,57 +43,6 @@ void unlink_db(string const& db_dir)
     }
 }
 
-// The Person example appears in the doc, so we have it here too. It's nice
-// if the examples in the doc actually compile and run...
-
-struct Person
-{
-    string name;
-    int age;
-};
-
-namespace core  // Specializations must be placed into namespace core.
-{
-
-template <>
-string CacheCodec<Person>::encode(Person const& p)
-{
-    ostringstream s;
-    s << p.age << ' ' << p.name;
-    return s.str();
-}
-
-template <>
-Person CacheCodec<Person>::decode(string const& str)
-{
-    istringstream s(str);
-    Person p;
-    s >> p.age >> p.name;
-    return p;
-}
-
-}  // namespace core
-
-TEST(PersistentCache, person_key)
-{
-    unlink_db("my_db");
-
-    using PersonCache = core::PersistentCache<Person, string>;
-
-    auto c = PersonCache::open("my_db", 1024 * 1024 * 1024, CacheDiscardPolicy::lru_only);
-
-    Person bjarne{"Bjarne Stroustrup", 65};
-    c->put(bjarne, "C++ inventor");
-    auto value = c->get(bjarne);
-    if (value)
-    {
-        cout << bjarne.name << ": " << *value << endl;
-    }
-    Person person{"no such person", 0};
-    value = c->get(person);
-    assert(!value);
-}
-
 namespace core
 {
 

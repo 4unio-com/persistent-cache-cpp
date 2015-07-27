@@ -93,6 +93,7 @@ add_subdirectory(src)
 add_subdirectory(include)
 add_subdirectory(tests)
 add_subdirectory(data)
+add_subdirectory(examples)
 
 enable_coverage_report(
     TARGETS
@@ -123,8 +124,6 @@ add_doxygen(
     EXCLUDE_SYMBOLS
         *::internal*
         *::Priv
-    EXAMPLE_PATH
-        "${CMAKE_SOURCE_DIR}/include"  # TODO: HACK to avoid warning. See bug 1476487
     ALL
 )
 install(DIRECTORY ${CMAKE_BINARY_DIR}/doc/html
