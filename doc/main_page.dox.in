@@ -9,8 +9,9 @@ is provided to permit the use of types other than `string`.
 
 The cache is intended for caching arbitrary (possibly large) amounts of data,
 such as might be needed by a web browser cache. The cache scales to large
-numbers (millions) of entries and is [very fast](@ref performance). (Typically,
-the performance-limiting factor is the I/O bandwidth to disk.)
+numbers (millions) of entries and is [very fast](@ref performance).
+The implementation is based on [leveldb](http://leveldb.org) and typically
+provides throughput many times larger than the I/O bandwidth to disk.
 
 The cache is robust in the face of crashes and power loss. After a
 re-start, it is guaranteed to be in a consistent state with correct
