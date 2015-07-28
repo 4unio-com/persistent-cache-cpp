@@ -2,9 +2,13 @@ Source: persistent-cache-cpp
 Priority: optional
 Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
 Build-Depends: cmake,
-               cmake-extras,
+               cmake-extras (>= 0.4),
                debhelper (>= 9),
-               libleveldb-dev
+               doxygen,
+               libboost-filesystem-dev,
+               libgtest-dev,
+               libleveldb-dev,
+               pkg-config,
 Standards-Version: 3.9.6
 XS-Testsuite: autopkgtest
 Section: libs
