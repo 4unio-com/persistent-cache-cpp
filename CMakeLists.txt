@@ -94,6 +94,7 @@ add_subdirectory(include)
 add_subdirectory(tests)
 add_subdirectory(data)
 add_subdirectory(examples)
+add_subdirectory(doc)
 
 enable_coverage_report(
     TARGETS
@@ -112,6 +113,7 @@ file(GLOB public_headers ${CMAKE_SOURCE_DIR}/include/core/*.h)
 add_doxygen(
     ${LIBNAME}-doc
     INPUT
+        ${CMAKE_BINARY_DIR}/doc/main_page.dox
         ${public_headers}
     OUTPUT_DIRECTORY
         ${CMAKE_BINARY_DIR}/doc
