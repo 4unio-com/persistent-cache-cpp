@@ -100,8 +100,8 @@ Besides storing key-value pairs, the cache allows you to add arbitrary
 extra data to each entry. This is useful, for example, to maintain
 metadata (such as HTTP header details) for the entries in the cache.
 
-\warning It is not possible to distinguish between "no metadata was ever added"
-and "empty metadata was added and retrieved". Do not use the metadata in such
+\warning It is not possible to distinguish between "no metadata was added"
+and "empty metadata was added". Do not use the metadata in such
 a way that you rely the difference between "metadata not there" and
 "metadata is the empty string".
 
@@ -144,6 +144,28 @@ mode, a number of expensive assertions are turned on.
 \note Also be aware that leveldb uses Snappy compression beneath the
 covers. This means that, if test data is simply filled with
 a fixed byte pattern, you will measure artificially high performance.
+
+### Usage example
+
+Typical use looks something like this:
+
+\code{.cpp}
+// Open cache or create it if it does not exist.
+auto c = core::PersistentStringCache::open("my_db", 1024 * 1024 * 1024, core::CacheDiscardPolicy::lru_only);
+
+// Look for an entry. If it doesn't exist, add it.
+string key = "some_key";
+auto value = c->get(key);
+if (value)
+{
+    cout << *value << endl;
+}
+else
+{
+    string v = "some value";
+    c->put(key, v);
+}
+\endcode
 */
 
 class PersistentStringCache
