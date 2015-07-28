@@ -6,7 +6,6 @@ Build-Depends: cmake,
                debhelper (>= 9),
                libgtest-dev,
                libleveldb-dev,
-               pkg-config,
 Standards-Version: 3.9.6
 XS-Testsuite: autopkgtest
 Section: libs
