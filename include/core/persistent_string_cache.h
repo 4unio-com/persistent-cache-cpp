@@ -36,114 +36,11 @@ class PersistentStringCacheImpl;
 /**
 \brief A cache of key-value pairs with persistent storage.
 
-PersistentStringCache provides a cache of key-value pairs with a backing store.
+PersistentStringCache provides a cache of `string` key-value pairs with a backing store.
 It is intended for caching arbitrary (possibly large) amounts of data,
-such as might be needed by a web browser cache. The cache scales to large
-numbers (hundreds of thousands) of entries and is very fast. (Typically,
-the performance-limiting factor is the I/O bandwidth to disk.)
+such as might be needed by a web browser cache.
 
-The cache is robust in the face of crashes and power loss. After a
-re-start, it is guaranteed to be in a consistent state with correct
-data. Some number of updates that were made just prior to a power loss
-or kernel crash can be lost; however, if just the calling process
-crashes, no updates are lost.
-
-A cache has a maximum size (which can be changed at any time). Once
-the cache reaches its maximum size, when adding an entry,
-the cache automatically discards enough entries to make room for the new entry.
-
-Keys can be (possibly binary) strings of size &gt; 0. Values can be
-(possibly binary) strings including the empty string.
-
-Entries maintain an access time, which is used to keep them in
-least-recently-used (LRU) order. In addition, entries can have
-an optional expiry time. (If no expiry time is specified, infinite
-expiry time is assumed.)
-
-\note This class is thread-safe; you can call member functions from
-different threads without any synchronization. Thread-safety is
-provided for convenience, not performance. Calling concurrently
-into the cache from multiple threads will not yield improved performance.
-
-### Discard Policy
-
-The cache provides two different discard policies, `lru_ttl`
-and `lru_only`.
-
-For `lru_ttl`, the discard policy of the cache is to first delete all
-entries that have expired. If this does not free sufficient space
-to make room for a new entry, the cache then deletes entries in oldest
-to newest (LRU) order until sufficient space is available. This
-deletion in LRU order may delete entries that have an
-expiry time, but have not expired yet, as well as entries with
-infinite expiry time.
-
-For `lru_only`, entries do not maintain an expiry time and
-are therefore discarded strictly in LRU order.
-
-Access and expiry times are recorded with millisecond granularity.
-To indicate infinite expiry time, use the defaulted parameter value or
-`chrono::system_clock::time_point()`.
-
-### Error reporting
-
-Methods throw `std::runtime_error` if the underlying database
-(leveldb) reports an error. If leveldb detects database corruption, the code
-throws `std::system_error` with with a 666 error code. To recover
-from this error, remove all files in the cache directory.
-Other errors are indicated by throwing `std::logic_error` or
-`std::invalid_argument` as appropriate.
-
-### Additional data
-
-Besides storing key-value pairs, the cache allows you to add arbitrary
-extra data to each entry. This is useful, for example, to maintain
-metadata (such as HTTP header details) for the entries in the cache.
-
-\warning It is not possible to distinguish between "no metadata was added"
-and "empty metadata was added". Do not use the metadata in such
-a way that you rely the difference between "metadata not there" and
-"metadata is the empty string".
-
-### Performance
-
-Some rough performance figures, taken on an Intel Ivy Bridge i7-3770K 3.5 GHz
-with 16 GB RAM, appear below. Records are filled with random data to make them non-compressible.
-
-After filling the cache, the code performs cache lookups using random
-keys, with an 80% hit probability. On a miss, it inserts a new
-random record. This measures the typical steady-state behavior:
-whenever a cache miss happens, the caller fetches the data and
-inserts a new record into the cache.
-
-Setting     | Value
-----------  | ------
-Cache size  | 100 MB
-# Records   | ~5120
-Record size | 20 kB, normal distribution, stddev = 7000
-
-Running the test With a 7200 rpm spinning disk produces:
-
-Parameter    | Value
--------------|------------
-Reads        | 30.9 MB/sec
-Writes       | 7.0 MB/sec
-Records/sec  | 1995
-
-Running the test With an Intel 256 GB SSD produces:
-
-Parameter    | Value
--------------|------------
-Reads        | 112.6 MB/sec
-Writes       | 25.7 MB/sec
-Records/sec  | 7112
-
-\note When benchmarking, make sure to compile in release mode. In debug
-mode, a number of expensive assertions are turned on.
-
-\note Also be aware that leveldb uses Snappy compression beneath the
-covers. This means that, if test data is simply filled with
-a fixed byte pattern, you will measure artificially high performance.
+See @ref overview for a more detailed description.
 
 ### Usage example
 

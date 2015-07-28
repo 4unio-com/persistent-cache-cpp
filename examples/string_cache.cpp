@@ -28,7 +28,10 @@ using namespace std;
 
 int main(int /* argc */, char** /* argv */)
 {
-    system("rm -fr " DB_NAME);
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-result"
+    system("rm -fr " DB_NAME "/*");
+#pragma GCC diagnostic pop
 
     auto c = core::PersistentStringCache::open(DB_NAME, 1024 * 1024 * 1024, core::CacheDiscardPolicy::lru_only);
 

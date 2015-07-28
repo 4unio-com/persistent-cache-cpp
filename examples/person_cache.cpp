@@ -56,7 +56,10 @@ Person CacheCodec<Person>::decode(string const& str)
 
 int main(int /* argc */, char** /* argv */)
 {
-    system("rm -fr " DB_NAME);
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-result"
+    system("rm -fr " DB_NAME "/*");
+#pragma GCC diagnostic pop
 
     using PersonCache = core::PersistentCache<Person, string>;
 
