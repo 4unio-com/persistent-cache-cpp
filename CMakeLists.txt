@@ -130,23 +130,3 @@ add_doxygen(
 )
 install(DIRECTORY ${CMAKE_BINARY_DIR}/doc/html
         DESTINATION share/doc/${LIBNAME})
-
-# TODO: Below is the way doc can be generated without using add_doxygen() from cmake-extras.
-#       This avoids re-building the doc even though nothing is out of date.
-#       See bug 1476488.
-
-#find_package(Doxygen)
-#find_program(DOT_EXECUTABLE dot /usr/bin)
-#if (NOT DOXYGEN_FOUND OR NOT DOT_EXECUTABLE)
-#    message(WARNING "Cannot generate documentation: doxygen and/or graphviz not found")
-#else()
-#    configure_file(${PROJECT_SOURCE_DIR}/doc/Doxyfile.in ${PROJECT_BINARY_DIR}/doc/Doxyfile @ONLY IMMEDIATE)
-#    add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/doc/lib${LIBNAME}/index.html
-#                       COMMAND ${DOXYGEN_EXECUTABLE} ${PROJECT_BINARY_DIR}/doc/Doxyfile
-#                       DEPENDS ${PROJECT_BINARY_DIR}/doc/Doxyfile
-#                               ${PROJECT_SOURCE_DIR}/include/core/*.h)
-#    add_custom_target(doc ALL
-#                       DEPENDS ${PROJECT_BINARY_DIR}/doc/lib${LIBNAME}/index.html)
-#    install(DIRECTORY ${PROJECT_BINARY_DIR}/doc/lib${LIBNAME}
-#            DESTINATION ${CMAKE_INSTALL_PREFIX}/share/doc)
-#endif()

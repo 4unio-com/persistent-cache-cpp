@@ -27,9 +27,9 @@ cd $WORKDIR
 cp /usr/share/doc/persistent-cache-cpp/examples/string_cache.cpp .
 cp /usr/share/doc/persistent-cache-cpp/examples/person_cache.cpp .
 
-g++ --std=c++11 -o string_cache string_cache.cpp `pkg-config --cflags --libs libpersistent-cache-cpp` -lleveldb
+g++ --std=c++11 -o string_cache string_cache.cpp `pkg-config --cflags --libs libpersistent-cache-cpp`
 [ -x string_cache ]
-g++ --std=c++11 -o person_cache person_cache.cpp `pkg-config --cflags --libs libpersistent-cache-cpp` -lleveldb
+g++ --std=c++11 -o person_cache person_cache.cpp `pkg-config --cflags --libs libpersistent-cache-cpp`
 [ -x person_cache ]
 
 ./string_cache
