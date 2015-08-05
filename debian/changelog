@@ -1,9 +1,10 @@
-persistent-cache-cpp (1.0.0-0ubuntu1) UNRELEASED; urgency=medium
+persistent-cache-cpp (1.0.0+15.10.20150805-0ubuntu1) wily; urgency=medium
 
+  [ Michi Henning ]
   * Fixes: 1481144
   * Changes to tests for boost 1.58
 
- -- Michi Henning <michi.henning@canonical.com>  Wed, 5 Aug 2015 12:40:24 +1000
+ -- CI Train Bot <ci-train-bot@canonical.com>  Wed, 05 Aug 2015 00:21:58 +0000
 
 persistent-cache-cpp (1.0.0) UNRELEASED; urgency=medium
 
