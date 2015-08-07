@@ -1,2 +1,2 @@
 Tests: test-examples
-Depends: @, g++, libstdc++6, libboost-dev, libleveldb1, pkg-config
+Depends: @, g++, libstdc++6, libboost-dev, libleveldb-dev, pkg-config
