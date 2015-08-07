@@ -19,25 +19,10 @@
 #
 
 set -e  # Fail if any command fails.
-set -x
 
 WORKDIR=$(mktemp -d)
 trap "rm -rf $WORKDIR" 0 INT QUIT ABRT PIPE TERM
 cd $WORKDIR
-
-echo "PATH: $PATH"
-#PATH=$PATH:/usr/bin
-#echo "new PATH: $PATH"
-#eval `dpkg-architecture -s`
-#export
-#LIB_DIR=/usr/lib/$DEB_HOST_MULTIARCH
-#export LD_LIBRARY_PATH=$LIB_DIR:$LD_LIBRARY_PATH
-
-echo "PATH: $PATH"
-echo "LD_LIBRARY_PATH: $LD_LIBRARY_PATH"
-#echo "MULTI: $DEB_HOST_MULTIARCH"
-#echo "LIB_DIR: $LIB_DIR"
-echo "LD_LIBRARY_PATH: $LD_LIBRARY_PATH"
 
 cp /usr/share/doc/persistent-cache-cpp/examples/string_cache.cpp .
 cp /usr/share/doc/persistent-cache-cpp/examples/person_cache.cpp .
@@ -49,4 +34,5 @@ g++ --std=c++11 -o person_cache person_cache.cpp `pkg-config --cflags --libs lib
 
 ./string_cache
 ./person_cache
-echo "Done"
+
+echo "PASSED: autopkg tests"
