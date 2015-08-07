@@ -25,7 +25,8 @@ Section: libdevel
 Architecture: any
 Multi-Arch: same
 Depends: ${misc:Depends},
-         libleveldb1,
+         libboost-dev,
+         libleveldb-dev,
          pkg-config,
 Description: Cache of key-value pairs with persistent storage for C++ 11
  A persistent cache for arbitrary (possibly large amount of data, such as
