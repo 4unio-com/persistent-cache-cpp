@@ -25,7 +25,9 @@ WORKDIR=$(mktemp -d)
 trap "rm -rf $WORKDIR" 0 INT QUIT ABRT PIPE TERM
 cd $WORKDIR
 
+echo "PATH: $PATH"
 PATH=$PATH:/usr/bin
+echo "new PATH: $PATH"
 eval export `dpkg-architecture -s`
 export
 LIB_DIR=/usr/lib/$DEB_HOST_MULTIARCH
