@@ -34,3 +34,5 @@ g++ --std=c++11 -o person_cache person_cache.cpp `pkg-config --cflags --libs lib
 
 ./string_cache
 ./person_cache
+
+echo "PASSED: autopkg tests"
