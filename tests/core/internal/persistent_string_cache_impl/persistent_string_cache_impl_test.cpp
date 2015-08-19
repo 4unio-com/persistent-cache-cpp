@@ -1788,7 +1788,7 @@ TEST(PersistentStringCacheImpl, run_length_stats)
     EXPECT_EQ(0, s.hit_runs());
     EXPECT_EQ(1, s.miss_runs());              // Just started a miss run
     EXPECT_EQ(0.0, s.avg_hit_run_length());
-    EXPECT_EQ(0.0, s.avg_miss_run_length());
+    EXPECT_EQ(1.0, s.avg_miss_run_length());
 
     c.get("not there", val);                  // Another miss
     s = c.stats();
@@ -1797,7 +1797,7 @@ TEST(PersistentStringCacheImpl, run_length_stats)
     EXPECT_EQ(0, s.hit_runs());
     EXPECT_EQ(1, s.miss_runs());              // Still in the same run
     EXPECT_EQ(0.0, s.avg_hit_run_length());
-    EXPECT_EQ(0.0, s.avg_miss_run_length());
+    EXPECT_EQ(2.0, s.avg_miss_run_length());
 
     c.get("x", val);                          // Hit
     s = c.stats();
@@ -1805,7 +1805,7 @@ TEST(PersistentStringCacheImpl, run_length_stats)
     EXPECT_EQ(2, s.misses());
     EXPECT_EQ(1, s.hit_runs());               // Just started a hit run
     EXPECT_EQ(1, s.miss_runs());
-    EXPECT_EQ(0.0, s.avg_hit_run_length());
+    EXPECT_EQ(1.0, s.avg_hit_run_length());
     EXPECT_EQ(2.0, s.avg_miss_run_length());  // Last run was two misses
 
     c.get("not there", val);                  // Another miss
@@ -1815,7 +1815,7 @@ TEST(PersistentStringCacheImpl, run_length_stats)
     EXPECT_EQ(1, s.hit_runs());
     EXPECT_EQ(2, s.miss_runs());              // Just started a new miss run
     EXPECT_EQ(1.0, s.avg_hit_run_length());
-    EXPECT_EQ(2.0, s.avg_miss_run_length());  // Last run was two misses
+    EXPECT_EQ(1.5, s.avg_miss_run_length());  // Last run was two misses
 
     for (int i = 0; i < 3; ++i)               // Three more misses
     {
@@ -1827,7 +1827,7 @@ TEST(PersistentStringCacheImpl, run_length_stats)
     EXPECT_EQ(1, s.hit_runs());
     EXPECT_EQ(2, s.miss_runs());              // Just started a new miss run
     EXPECT_EQ(1.0, s.avg_hit_run_length());
-    EXPECT_EQ(2.0, s.avg_miss_run_length());  // Still the old value until we generate a hit.
+    EXPECT_EQ(3.0, s.avg_miss_run_length());
 
     c.get("x", val);                          // Hit
     s = c.stats();
@@ -1862,15 +1862,19 @@ TEST(PersistentStringCacheImpl, run_length_stats_restart)
         c.get("x", val);  // Hit
     }
 
-    c.get("not there", val);  // Finish hit run.
+    // Finish hit run, and add six more misses.
+    for (int i = 0; i < 6; ++i)
+    {
+        c.get("not there", val);
+    }
 
     s = c.stats();
     EXPECT_EQ(20, s.hits());
-    EXPECT_EQ(7, s.misses());
+    EXPECT_EQ(12, s.misses());
     EXPECT_EQ(2, s.hit_runs());
     EXPECT_EQ(3, s.miss_runs());
     EXPECT_EQ(10.0, s.avg_hit_run_length());
-    EXPECT_EQ(3.0, s.avg_miss_run_length());
+    EXPECT_EQ(4.0, s.avg_miss_run_length());
 }
 
 TEST(PersistentStringCacheImpl, event_handlers)
