@@ -13,7 +13,7 @@ set(LIBNAME persistent-cache-cpp)
 
 set(VERSION_MAJOR 1)
 set(VERSION_MINOR 0)
-set(VERSION_MICRO 0)
+set(VERSION_MICRO 4)
 set(LIBVERSION "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_MICRO}")
 
 string(TOLOWER "${CMAKE_BUILD_TYPE}" cmake_build_type_lower) # Build types should always be lower case
