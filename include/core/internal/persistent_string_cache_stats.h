@@ -42,7 +42,6 @@ public:
         , max_cache_size_(0)
         , num_entries_(0)
         , cache_size_(0)
-        , state_(Initialized)
     {
         clear();
         hist_.resize(PersistentCacheStats::NUM_BINS, 0);
@@ -68,6 +67,10 @@ public:
     int64_t misses_since_last_hit_;
     int64_t longest_hit_run_;
     int64_t longest_miss_run_;
+    int64_t num_hit_runs_;
+    int64_t num_miss_runs_;
+    double avg_hit_run_length_;
+    double avg_miss_run_length_;
     int64_t ttl_evictions_;
     int64_t lru_evictions_;
     std::chrono::system_clock::time_point most_recent_hit_time_;
@@ -88,9 +91,16 @@ public:
         ++hits_since_last_miss_;
         ++hits_;
         most_recent_hit_time_ = std::chrono::system_clock::now();
-        misses_since_last_hit_ = 0;
         if (state_ != LastAccessWasHit)
         {
+            if (state_ == LastAccessWasMiss)  // => state_ != Initialized
+            {
+                // Just changed from a miss to a hit, update average miss run length (rolling average).
+                assert(num_miss_runs_ > 0);
+                avg_miss_run_length_ = (avg_miss_run_length_ * (num_miss_runs_ - 1) + misses_since_last_hit_)
+                                       / (num_miss_runs_);
+            }
+            ++num_hit_runs_;
             state_ = LastAccessWasHit;
             misses_since_last_hit_ = 0;
         }
@@ -106,9 +116,16 @@ public:
         ++misses_since_last_hit_;
         ++misses_;
         most_recent_miss_time_ = std::chrono::system_clock::now();
-        hits_since_last_miss_ = 0;
         if (state_ != LastAccessWasMiss)
         {
+            if (state_ == LastAccessWasHit)  // => state_ != Initialized
+            {
+                // Just changed from a hit to a miss, update average hit run length (rolling average).
+                assert(num_hit_runs_ > 0);
+                avg_hit_run_length_ = (avg_hit_run_length_ * (num_hit_runs_ - 1) + hits_since_last_miss_)
+                                      / (num_hit_runs_);
+            }
+            ++num_miss_runs_;
             state_ = LastAccessWasMiss;
             hits_since_last_miss_ = 0;
         }
@@ -138,12 +155,17 @@ public:
 
     void clear() noexcept
     {
+        state_ = Initialized;
         hits_ = 0;
         misses_ = 0;
         hits_since_last_miss_ = 0;
         misses_since_last_hit_ = 0;
         longest_hit_run_ = 0;
         longest_miss_run_ = 0;
+        num_hit_runs_ = 0;
+        num_miss_runs_ = 0;
+        avg_hit_run_length_ = 0.0;
+        avg_miss_run_length_ = 0.0;
         ttl_evictions_ = 0;
         lru_evictions_ = 0;
         most_recent_hit_time_ = std::chrono::system_clock::time_point();
@@ -160,7 +182,8 @@ public:
         using namespace std::chrono;
 
         ostringstream os;
-        os << num_entries_ << " "
+        os << state_ << " "
+           << num_entries_ << " "
            << cache_size_ << " "
            << hits_ << " "
            << misses_ << " "
@@ -168,6 +191,10 @@ public:
            << misses_since_last_hit_ << " "
            << longest_hit_run_ << " "
            << longest_miss_run_ << " "
+           << num_hit_runs_ << " "
+           << num_miss_runs_ << " "
+           << avg_hit_run_length_ << " "
+           << avg_miss_run_length_ << " "
            << ttl_evictions_ << " "
            << lru_evictions_ << " "
            << duration_cast<milliseconds>(most_recent_hit_time_.time_since_epoch()).count() << " "
@@ -189,11 +216,13 @@ public:
         using namespace std::chrono;
 
         istringstream is(s);
+        int64_t state;
         int64_t mrht;
         int64_t mrmt;
         int64_t lhrt;
         int64_t lmrt;
-        is >> num_entries_
+        is >> state
+           >> num_entries_
            >> cache_size_
            >> hits_
            >> misses_
@@ -201,6 +230,10 @@ public:
            >> misses_since_last_hit_
            >> longest_hit_run_
            >> longest_miss_run_
+           >> num_hit_runs_
+           >> num_miss_runs_
+           >> avg_hit_run_length_
+           >> avg_miss_run_length_
            >> ttl_evictions_
            >> lru_evictions_
            >> mrht
@@ -212,6 +245,7 @@ public:
             is >> hist_[i];
         }
         assert(!is.bad());
+        state_ = static_cast<State>(state);
         most_recent_hit_time_ = system_clock::time_point(milliseconds(mrht));
         most_recent_miss_time_ = system_clock::time_point(milliseconds(mrmt));
         longest_hit_run_time_ = system_clock::time_point(milliseconds(lhrt));

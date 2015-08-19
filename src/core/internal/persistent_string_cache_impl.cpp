@@ -154,7 +154,7 @@ static leveldb::ReadOptions read_options;
 // with a different schema version, the cache is simply thrown away, so
 // it will automatically be re-created using the latest schema.
 
-static int const SCHEMA_VERSION = 2;  // Increment whenever schema changes!
+static int const SCHEMA_VERSION = 3;  // Increment whenever schema changes!
 
 // Prefixes to divide the key space into logical tables/indexes.
 // All prefixes must have length 1. The end prefix must be

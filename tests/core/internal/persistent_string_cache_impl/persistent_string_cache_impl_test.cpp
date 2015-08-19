@@ -1679,6 +1679,10 @@ TEST(PersistentStringCacheImpl, stats)
         EXPECT_EQ(original_stats.misses_since_last_hit(), s.misses_since_last_hit());
         EXPECT_EQ(original_stats.longest_hit_run(), s.longest_hit_run());
         EXPECT_EQ(original_stats.longest_miss_run(), s.longest_miss_run());
+        EXPECT_EQ(original_stats.hit_runs(), s.hit_runs());
+        EXPECT_EQ(original_stats.miss_runs(), s.miss_runs());
+        EXPECT_EQ(original_stats.avg_hit_run_length(), s.avg_hit_run_length());
+        EXPECT_EQ(original_stats.avg_miss_run_length(), s.avg_miss_run_length());
         EXPECT_EQ(original_stats.ttl_evictions(), s.ttl_evictions());
         EXPECT_EQ(original_stats.lru_evictions(), s.lru_evictions());
 
@@ -1743,6 +1747,10 @@ TEST(PersistentStringCacheImpl, stats)
         EXPECT_EQ(0, s.misses_since_last_hit());
         EXPECT_EQ(0, s.longest_hit_run());
         EXPECT_EQ(0, s.longest_miss_run());
+        EXPECT_EQ(0, s.hit_runs());
+        EXPECT_EQ(0, s.miss_runs());
+        EXPECT_EQ(0.0, s.avg_hit_run_length());
+        EXPECT_EQ(0.0, s.avg_miss_run_length());
         EXPECT_EQ(0, s.ttl_evictions());
         EXPECT_EQ(0, s.lru_evictions());
 
@@ -1752,6 +1760,117 @@ TEST(PersistentStringCacheImpl, stats)
         EXPECT_EQ(system_clock::time_point(), s.longest_hit_run_time());
         EXPECT_EQ(system_clock::time_point(), s.longest_miss_run_time());
     }
+}
+
+TEST(PersistentStringCacheImpl, run_length_stats)
+{
+    unlink_db(TEST_DB);
+
+    PersistentStringCacheImpl c(TEST_DB, 128, CacheDiscardPolicy::lru_only);
+
+    c.put("x", "x");  // Just so we have something we can generate a hit on.
+
+    auto s = c.stats();
+
+    EXPECT_EQ(0, s.hits());
+    EXPECT_EQ(0, s.misses());
+    EXPECT_EQ(0, s.hit_runs());
+    EXPECT_EQ(0, s.miss_runs());
+    EXPECT_EQ(0.0, s.avg_hit_run_length());
+    EXPECT_EQ(0.0, s.avg_miss_run_length());
+
+    string val;
+
+    c.get("not there", val);                  // Miss
+    s = c.stats();
+    EXPECT_EQ(0, s.hits());
+    EXPECT_EQ(1, s.misses());
+    EXPECT_EQ(0, s.hit_runs());
+    EXPECT_EQ(1, s.miss_runs());              // Just started a miss run
+    EXPECT_EQ(0.0, s.avg_hit_run_length());
+    EXPECT_EQ(0.0, s.avg_miss_run_length());
+
+    c.get("not there", val);                  // Another miss
+    s = c.stats();
+    EXPECT_EQ(0, s.hits());
+    EXPECT_EQ(2, s.misses());
+    EXPECT_EQ(0, s.hit_runs());
+    EXPECT_EQ(1, s.miss_runs());              // Still in the same run
+    EXPECT_EQ(0.0, s.avg_hit_run_length());
+    EXPECT_EQ(0.0, s.avg_miss_run_length());
+
+    c.get("x", val);                          // Hit
+    s = c.stats();
+    EXPECT_EQ(1, s.hits());
+    EXPECT_EQ(2, s.misses());
+    EXPECT_EQ(1, s.hit_runs());               // Just started a hit run
+    EXPECT_EQ(1, s.miss_runs());
+    EXPECT_EQ(0.0, s.avg_hit_run_length());
+    EXPECT_EQ(2.0, s.avg_miss_run_length());  // Last run was two misses
+
+    c.get("not there", val);                  // Another miss
+    s = c.stats();
+    EXPECT_EQ(1, s.hits());
+    EXPECT_EQ(3, s.misses());
+    EXPECT_EQ(1, s.hit_runs());
+    EXPECT_EQ(2, s.miss_runs());              // Just started a new miss run
+    EXPECT_EQ(1.0, s.avg_hit_run_length());
+    EXPECT_EQ(2.0, s.avg_miss_run_length());  // Last run was two misses
+
+    for (int i = 0; i < 3; ++i)               // Three more misses
+    {
+        c.get("not there", val);
+    }
+    s = c.stats();
+    EXPECT_EQ(1, s.hits());
+    EXPECT_EQ(6, s.misses());
+    EXPECT_EQ(1, s.hit_runs());
+    EXPECT_EQ(2, s.miss_runs());              // Just started a new miss run
+    EXPECT_EQ(1.0, s.avg_hit_run_length());
+    EXPECT_EQ(2.0, s.avg_miss_run_length());  // Still the old value until we generate a hit.
+
+    c.get("x", val);                          // Hit
+    s = c.stats();
+    EXPECT_EQ(2, s.hits());
+    EXPECT_EQ(6, s.misses());
+    EXPECT_EQ(2, s.hit_runs());
+    EXPECT_EQ(2, s.miss_runs());
+    EXPECT_EQ(1.0, s.avg_hit_run_length());
+    EXPECT_EQ(3.0, s.avg_miss_run_length());  // 6 missing in 2 runs.
+}
+
+TEST(PersistentStringCacheImpl, run_length_stats_restart)
+{
+    // Don't unlink the DB here, we need the contents from the previous test.
+
+    PersistentStringCacheImpl c(TEST_DB, 128, CacheDiscardPolicy::lru_only);
+
+    string val;
+
+    auto s = c.stats();
+
+    // Stats from pervious test must still be intact.
+    EXPECT_EQ(2, s.hits());
+    EXPECT_EQ(6, s.misses());
+    EXPECT_EQ(2, s.hit_runs());
+    EXPECT_EQ(2, s.miss_runs());
+    EXPECT_EQ(1.0, s.avg_hit_run_length());
+    EXPECT_EQ(3.0, s.avg_miss_run_length());
+
+    for (int i = 0; i < 18; ++i)
+    {
+        c.get("x", val);  // Hit
+    }
+
+    c.get("not there", val);  // Finish hit run.
+
+    s = c.stats();
+    EXPECT_EQ(20, s.hits());
+    EXPECT_EQ(7, s.misses());
+    EXPECT_EQ(2, s.hit_runs());
+    EXPECT_EQ(3, s.miss_runs());
+    EXPECT_EQ(10.0, s.avg_hit_run_length());
+    EXPECT_EQ(3.0, s.avg_miss_run_length());
 }
 
 TEST(PersistentStringCacheImpl, event_handlers)
