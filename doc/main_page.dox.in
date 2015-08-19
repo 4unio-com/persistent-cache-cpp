@@ -97,7 +97,7 @@ inserts a new record into the cache.
 Setting     | Value
 ----------  | ------
 Cache size  | 100 MB
-# Records   | ~5120
+# Records   | ~5100
 Record size | 20 kB, normal distribution, stddev = 7000
 
 Running the test With a 7200 rpm spinning disk produces:
@@ -112,9 +112,9 @@ Running the test With an Intel 256 GB SSD produces:
 
 Parameter    | Value
 -------------|------------
-Reads        | 112.6 MB/sec
-Writes       | 25.7 MB/sec
-Records/sec  | 7112
+Reads        | 80.4 MB/sec
+Writes       | 15.7 MB/sec
+Records/sec  | 4932
 
 \note When benchmarking, make sure to compile in release mode. In debug
 mode, a number of expensive assertions are turned on.

@@ -117,6 +117,26 @@ public:
     int64_t longest_miss_run() const noexcept;
 
     /**
+    \brief Returns the number of hit runs.
+    */
+    int64_t hit_runs() const noexcept;
+
+    /**
+    \brief Returns the number of miss runs.
+    */
+    int64_t miss_runs() const noexcept;
+
+    /**
+    \brief Returns a rolling average of the hit run length.
+    */
+    double avg_hit_run_length() const noexcept;
+
+    /**
+    \brief Returns a rolling average of the miss run length.
+    */
+    double avg_miss_run_length() const noexcept;
+
+    /**
     \brief Returns the number of entries that were evicted due to being expired.
     */
     int64_t ttl_evictions() const noexcept;
