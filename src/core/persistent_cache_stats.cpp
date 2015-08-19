@@ -157,6 +157,26 @@ int64_t PersistentCacheStats::longest_miss_run() const noexcept
     return p_->longest_miss_run_;
 }
 
+int64_t PersistentCacheStats::hit_runs() const noexcept
+{
+    return p_->num_hit_runs_;
+}
+
+int64_t PersistentCacheStats::miss_runs() const noexcept
+{
+    return p_->num_miss_runs_;
+}
+
+double PersistentCacheStats::avg_hit_run_length() const noexcept
+{
+    return p_->num_hit_runs_ == 0 ? 0.0 : double(p_->hits_) / p_->num_hit_runs_;
+}
+
+double PersistentCacheStats::avg_miss_run_length() const noexcept
+{
+    return p_->num_miss_runs_ == 0 ? 0.0 : double(p_->misses_) / p_->num_miss_runs_;
+}
+
 int64_t PersistentCacheStats::ttl_evictions() const noexcept
 {
     return p_->ttl_evictions_;
