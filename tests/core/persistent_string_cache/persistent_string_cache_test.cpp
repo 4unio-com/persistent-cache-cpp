@@ -363,6 +363,26 @@ TEST(PersistentStringCache, stats)
             EXPECT_EQ(miss_run_time, s3.longest_miss_run_time());
 
             s2.cache_path();  // Moved-from instance must be usable.
+
+            // Move constructor from internal instance.
+            PersistentCacheStats s4(move(c->stats()));
+            EXPECT_EQ(test_db, s4.cache_path());
+            EXPECT_EQ(CacheDiscardPolicy::lru_ttl, s4.policy());
+            EXPECT_EQ(1, s4.size());
+            EXPECT_EQ(2, s4.size_in_bytes());
+            EXPECT_EQ(1024, s4.max_size_in_bytes());
+            EXPECT_EQ(4, s4.hits());
+            EXPECT_EQ(5, s4.misses());
+            EXPECT_EQ(1, s4.hits_since_last_miss());
+            EXPECT_EQ(0, s4.misses_since_last_hit());
+            EXPECT_EQ(3, s.longest_hit_run());
+            EXPECT_EQ(4, s.longest_miss_run());
+            EXPECT_EQ(last_hit_time, s4.most_recent_hit_time());
+            EXPECT_EQ(last_miss_time, s4.most_recent_miss_time());
+            EXPECT_EQ(hit_run_time, s4.longest_hit_run_time());
+            EXPECT_EQ(miss_run_time, s4.longest_miss_run_time());
+
+            s.cache_path();  // Moved-from instance must be usable.
         }
 
         // To get coverage for copying and moving from the internal instance,

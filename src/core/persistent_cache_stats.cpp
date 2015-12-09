@@ -60,11 +60,15 @@ PersistentCacheStats::PersistentCacheStats(PersistentCacheStats const& other)
 PersistentCacheStats::PersistentCacheStats(PersistentCacheStats&& other) noexcept
     : internal_(false)
 {
-    // The cache always passes the internal instance to the event
-    // handler by const ref, so it is not possible to move construct from it.
-    assert(!other.internal_);
-
-    p_ = other.p_;  // Move must leave the instance in a usable state, so we just copy the shared_ptr.
+    if (other.internal_)
+    {
+        p_ = make_shared<internal::PersistentStringCacheStats>(*other.p_);
+        internal_ = false;
+    }
+    else
+    {
+        p_ = other.p_;  // Move must leave the instance in a usable state, so we just copy the shared_ptr.
+    }
 }
 
 PersistentCacheStats& PersistentCacheStats::operator=(PersistentCacheStats const& rhs)
