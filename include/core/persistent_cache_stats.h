@@ -236,7 +236,7 @@ private:
     // We store a shared_ptr for efficiency. When the caller
     // retrieves the stats, we set p_ to point at the PersistentStringCacheStats
     // inside the cache. If the caller makes a copy or assigns,
-    // We create a new instance, to provide value semantics. This means
+    // we create a new instance, to provide value semantics. This means
     // that we don't have to copy all of the stats each time the caller
     // gets them.
     std::shared_ptr<internal::PersistentStringCacheStats const> p_;

@@ -62,8 +62,8 @@ PersistentCacheStats::PersistentCacheStats(PersistentCacheStats&& other) noexcep
 {
     if (other.internal_)
     {
+        // Source is pointing at the internal instance, so we make a copy here to de-couple from it.
         p_ = make_shared<internal::PersistentStringCacheStats>(*other.p_);
-        internal_ = false;
     }
     else
     {
