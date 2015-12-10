@@ -17,9 +17,7 @@
 # Authored by: Michi Henning <michi.henning@canonical.com>
 
 #
-# Check that, somewhere in the first 30 lines of each file, the string "Copyright" (case independent) appears.
-# Print out a messsage for each file without a copyright notice and exit with non-zero status
-# if any such file is found.
+# Check that we have acceptable license information in our source files.
 #
 
 usage()
@@ -30,6 +28,12 @@ usage()
 
 [ $# -lt 1 ] && usage
 [ $# -gt 2 ] && usage
+
+# TODO: Temporary hack to work around broken licensecheck on xenial. Remove this once that is fixed.
+distro=$(lsb_release -c -s)
+[ "$distro" = "xenial" ] && {
+    exit 0
+}
 
 ignore_pat="\\.sci$"
 
