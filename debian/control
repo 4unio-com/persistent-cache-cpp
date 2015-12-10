@@ -4,10 +4,12 @@ Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
 Build-Depends: cmake,
                cmake-extras (>= 0.4),
                debhelper (>= 9),
+               devscripts,
                doxygen,
                libboost-filesystem-dev,
                libgtest-dev,
                libleveldb-dev,
+               lsb-release,
                pkg-config,
                python3,
 Standards-Version: 3.9.6
