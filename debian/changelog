@@ -1,3 +1,9 @@
+persistent-cache-cpp (1.0.4+16.04.20160505-0ubuntu1) xenial; urgency=medium
+
+  * Fix for copyright test.
+
+ -- Michi Henning <michi.henning@canonical.com>  Thu, 05 May 2016 02:44:09 +0000
+
 persistent-cache-cpp (1.0.4+16.04.20160117-0ubuntu1) xenial; urgency=medium
 
   [ Michi Henning ]
