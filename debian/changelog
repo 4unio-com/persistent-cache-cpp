@@ -1,3 +1,9 @@
+persistent-cache-cpp (1.0.4+16.04.20160117-0ubuntu2) yakkety; urgency=medium
+
+  * No-change rebuild to pick up -fPIE on amd64.
+
+ -- Graham Inggs <ginggs@ubuntu.com>  Wed, 04 May 2016 17:55:45 +0200
+
 persistent-cache-cpp (1.0.4+16.04.20160117-0ubuntu1) xenial; urgency=medium
 
   [ Michi Henning ]
