@@ -35,7 +35,7 @@ distro=$(lsb_release -c -s)
     exit 0
 }
 
-ignore_pat="\\.sci$"
+ignore_pat="\\.sci$|debian|HACKING|README"
 
 #
 # We don't use the -i option of licensecheck to add ignore_dir to the pattern because Jenkins creates directories
