@@ -21,7 +21,10 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wctor-dtor-privacy"
 #include <gtest/gtest.h>
+#pragma GCC diagnostic pop
 
 #include <map>
 #include <thread>
@@ -372,7 +375,7 @@ TEST(PersistentStringCacheImpl, metadata)
         // That must evict entry "2", which is the second-oldest, and leave
         // entry "3" intact.
         val += 'a';
-        ASSERT_EQ(45, val.size());
+        ASSERT_EQ(45u, val.size());
         EXPECT_TRUE(c.put_metadata("1", val));
         EXPECT_FALSE(c.contains_key("2"));
         EXPECT_TRUE(c.contains_key("3"));
@@ -1480,7 +1483,7 @@ TEST(PersistentStringCacheImpl, stats)
         auto hist = s.histogram();
         for (unsigned i = 0; i < hist.size(); ++i)
         {
-            EXPECT_EQ(0, hist[i]);  // Histogram must be empty
+            EXPECT_EQ(0u, hist[i]);  // Histogram must be empty
         }
 
         c.put("x", "y");
@@ -1502,74 +1505,74 @@ TEST(PersistentStringCacheImpl, stats)
         EXPECT_EQ(2, s.size_in_bytes());
         EXPECT_EQ(128, s.max_size_in_bytes());
         EXPECT_EQ(0, s.hits());
-        EXPECT_EQ(1, s.histogram()[0]);
+        EXPECT_EQ(1u, s.histogram()[0]);
 
         c.put("x", "y");  // Value was already there
         s = c.stats();
         hist = s.histogram();
-        EXPECT_EQ(1, hist[0]);
+        EXPECT_EQ(1u, hist[0]);
         for (unsigned i = 1; i < hist.size(); ++i)
         {
-            EXPECT_EQ(0, hist[i]);
+            EXPECT_EQ(0u, hist[i]);
         }
 
         c.put("y", "");  // New value
         s = c.stats();
         hist = s.histogram();
-        EXPECT_EQ(2, hist[0]);
+        EXPECT_EQ(2u, hist[0]);
         for (unsigned i = 1; i < hist.size(); ++i)
         {
-            EXPECT_EQ(0, hist[i]);
+            EXPECT_EQ(0u, hist[i]);
         }
 
         c.put("y", "ab");  // Replace value with larger one in same bin.
         s = c.stats();
         hist = s.histogram();
-        EXPECT_EQ(2, hist[0]);  // Bin count must still be the same.
+        EXPECT_EQ(2u, hist[0]);  // Bin count must still be the same.
         for (unsigned i = 1; i < hist.size(); ++i)
         {
-            EXPECT_EQ(0, hist[i]);
+            EXPECT_EQ(0u, hist[i]);
         }
 
         c.put("y", string(9, 'y'));  // Replace value with larger one in next bin.
         s = c.stats();
         hist = s.histogram();
-        EXPECT_EQ(1, hist[0]);
-        EXPECT_EQ(1, hist[1]);  // Value must have moved to new bin.
+        EXPECT_EQ(1u, hist[0]);
+        EXPECT_EQ(1u, hist[1]);  // Value must have moved to new bin.
         for (unsigned i = 2; i < hist.size(); ++i)
         {
-            EXPECT_EQ(0, hist[i]);  // Other bins must still be empty.
+            EXPECT_EQ(0u, hist[i]);  // Other bins must still be empty.
         }
 
         c.put_metadata("y", string(1, 'm'));  // Add small metadata, value stays in same bin.
         s = c.stats();
         hist = s.histogram();
-        EXPECT_EQ(1, hist[0]);
-        EXPECT_EQ(1, hist[1]);  // Value must have moved to new bin.
+        EXPECT_EQ(1u, hist[0]);
+        EXPECT_EQ(1u, hist[1]);  // Value must have moved to new bin.
         for (unsigned i = 2; i < hist.size(); ++i)
         {
-            EXPECT_EQ(0, hist[i]);  // Other bins must still be empty.
+            EXPECT_EQ(0u, hist[i]);  // Other bins must still be empty.
         }
 
         c.put_metadata("y", string(10, 'm'));  // Add larger metadata, value moves to next bin.
         s = c.stats();
         hist = s.histogram();
-        EXPECT_EQ(1, hist[0]);
-        EXPECT_EQ(0, hist[1]);
-        EXPECT_EQ(1, hist[2]);
+        EXPECT_EQ(1u, hist[0]);
+        EXPECT_EQ(0u, hist[1]);
+        EXPECT_EQ(1u, hist[2]);
         for (unsigned i = 3; i < hist.size(); ++i)
         {
-            EXPECT_EQ(0, hist[i]);  // Other bins must still be empty.
+            EXPECT_EQ(0u, hist[i]);  // Other bins must still be empty.
         }
 
         c.put_metadata("y", string(1, 'm'));  // Shrink metadata, value moves to previous bin.
         s = c.stats();
         hist = s.histogram();
-        EXPECT_EQ(1, hist[0]);
-        EXPECT_EQ(1, hist[1]);
+        EXPECT_EQ(1u, hist[0]);
+        EXPECT_EQ(1u, hist[1]);
         for (unsigned i = 2; i < hist.size(); ++i)
         {
-            EXPECT_EQ(0, hist[i]) << i;  // Other bins must still be empty.
+            EXPECT_EQ(0u, hist[i]) << i;  // Other bins must still be empty.
         }
 
         c.put("new key", string(1, 'k'));
@@ -1583,7 +1586,7 @@ TEST(PersistentStringCacheImpl, stats)
         hist = s.histogram();
         for (unsigned i = 0; i < hist.size(); ++i)
         {
-            EXPECT_EQ(0, hist[i]);  // Histogram must have been emptied.
+            EXPECT_EQ(0u, hist[i]);  // Histogram must have been emptied.
         }
         EXPECT_EQ(0, s.hits());  // invalidate() also clears the ephemeral stats.
 
@@ -1594,25 +1597,25 @@ TEST(PersistentStringCacheImpl, stats)
         c.invalidate({"2", "3"});
         s = c.stats();
         hist = s.histogram();
-        EXPECT_EQ(1, hist[0]);
-        EXPECT_EQ(0, hist[1]);
-        EXPECT_EQ(0, hist[2]);
-        EXPECT_EQ(1, hist[3]);
+        EXPECT_EQ(1u, hist[0]);
+        EXPECT_EQ(0u, hist[1]);
+        EXPECT_EQ(0u, hist[2]);
+        EXPECT_EQ(1u, hist[3]);
         for (unsigned i = 4; i < hist.size(); ++i)
         {
-            EXPECT_EQ(0, hist[i]);  // Other bins must still be empty.
+            EXPECT_EQ(0u, hist[i]);  // Other bins must still be empty.
         }
 
         c.invalidate("1");  // Invalidate specific entry
         s = c.stats();
         hist = s.histogram();
-        EXPECT_EQ(0, hist[0]);
-        EXPECT_EQ(0, hist[1]);
-        EXPECT_EQ(0, hist[2]);
-        EXPECT_EQ(1, hist[3]);
+        EXPECT_EQ(0u, hist[0]);
+        EXPECT_EQ(0u, hist[1]);
+        EXPECT_EQ(0u, hist[2]);
+        EXPECT_EQ(1u, hist[3]);
         for (unsigned i = 4; i < hist.size(); ++i)
         {
-            EXPECT_EQ(0, hist[i]);  // Other bins must still be empty.
+            EXPECT_EQ(0u, hist[i]);  // Other bins must still be empty.
         }
 
         // Rather than testing all 74 bins, we test a few critical ones.
@@ -1663,13 +1666,13 @@ TEST(PersistentStringCacheImpl, stats)
 
         // Histogram must be re-established when opened.
         auto hist = s.histogram();
-        EXPECT_EQ(0, hist[0]);
-        EXPECT_EQ(0, hist[1]);
-        EXPECT_EQ(0, hist[2]);
-        EXPECT_EQ(1, hist[3]);
+        EXPECT_EQ(0u, hist[0]);
+        EXPECT_EQ(0u, hist[1]);
+        EXPECT_EQ(0u, hist[2]);
+        EXPECT_EQ(1u, hist[3]);
         for (unsigned i = 4; i < hist.size(); ++i)
         {
-            EXPECT_EQ(0, hist[i]);  // Other bins must still be empty.
+            EXPECT_EQ(0u, hist[i]);  // Other bins must still be empty.
         }
 
         // Ephemeral counters must still be intact.
@@ -1731,13 +1734,13 @@ TEST(PersistentStringCacheImpl, stats)
 
         // Histogram must be re-established when opened.
         auto hist = s.histogram();
-        EXPECT_EQ(0, hist[0]);
-        EXPECT_EQ(0, hist[1]);
-        EXPECT_EQ(0, hist[2]);
-        EXPECT_EQ(1, hist[3]);
+        EXPECT_EQ(0u, hist[0]);
+        EXPECT_EQ(0u, hist[1]);
+        EXPECT_EQ(0u, hist[2]);
+        EXPECT_EQ(1u, hist[3]);
         for (unsigned i = 4; i < hist.size(); ++i)
         {
-            EXPECT_EQ(0, hist[i]);  // Other bins must still be empty.
+            EXPECT_EQ(0u, hist[i]);  // Other bins must still be empty.
         }
 
         // Ephemeral counters must all be zero.
@@ -1914,7 +1917,7 @@ TEST(PersistentStringCacheImpl, event_handlers)
     // Check Put events.
 
     c.put("1", "x");
-    ASSERT_EQ(1, map->size());
+    ASSERT_EQ(1u, map->size());
     er = (*map)["1"];
     EXPECT_EQ(CacheEvent::put, er.ev);
     EXPECT_EQ(1, er.stats.size());
@@ -1922,7 +1925,7 @@ TEST(PersistentStringCacheImpl, event_handlers)
 
     this_thread::sleep_for(chrono::milliseconds(5));  // Make sure we have different time stamps.
     c.put("2", "x");
-    ASSERT_EQ(2, map->size());
+    ASSERT_EQ(2u, map->size());
     er = (*map)["2"];
     EXPECT_EQ(CacheEvent::put, er.ev);
     EXPECT_EQ(2, er.stats.size());
@@ -1930,7 +1933,7 @@ TEST(PersistentStringCacheImpl, event_handlers)
 
     this_thread::sleep_for(chrono::milliseconds(5));
     c.put("3", "x");
-    ASSERT_EQ(3, map->size());
+    ASSERT_EQ(3u, map->size());
     er = (*map)["3"];
     EXPECT_EQ(CacheEvent::put, er.ev);
     EXPECT_EQ(3, er.stats.size());
@@ -1938,7 +1941,7 @@ TEST(PersistentStringCacheImpl, event_handlers)
 
     this_thread::sleep_for(chrono::milliseconds(5));
     c.put("4", "x");
-    ASSERT_EQ(4, map->size());
+    ASSERT_EQ(4u, map->size());
     er = (*map)["4"];
     EXPECT_EQ(CacheEvent::put, er.ev);
     EXPECT_EQ(4, er.stats.size());
@@ -1949,7 +1952,7 @@ TEST(PersistentStringCacheImpl, event_handlers)
     this_thread::sleep_for(chrono::milliseconds(5));
     c.get("3", val);
     map = &event_maps[CacheEvent::get];
-    ASSERT_EQ(1, map->size());
+    ASSERT_EQ(1u, map->size());
     er = (*map)["3"];
     EXPECT_EQ(CacheEvent::get, er.ev);
     EXPECT_EQ(4, er.stats.size());
@@ -1960,7 +1963,7 @@ TEST(PersistentStringCacheImpl, event_handlers)
 
     map = &event_maps[CacheEvent::invalidate];
     c.invalidate("1");
-    ASSERT_EQ(1, map->size());
+    ASSERT_EQ(1u, map->size());
     er = (*map)["1"];
     EXPECT_EQ(CacheEvent::invalidate, er.ev);
     EXPECT_EQ(3, er.stats.size());
@@ -1969,7 +1972,7 @@ TEST(PersistentStringCacheImpl, event_handlers)
 
     c.take("2", val);
     map = &event_maps[CacheEvent::get];
-    ASSERT_EQ(1, map->size());
+    ASSERT_EQ(1u, map->size());
     er = (*map)["2"];
     EXPECT_EQ(CacheEvent::get, er.ev);
     EXPECT_EQ(2, er.stats.size());
@@ -1977,7 +1980,7 @@ TEST(PersistentStringCacheImpl, event_handlers)
     map->clear();
 
     map = &event_maps[CacheEvent::invalidate];
-    ASSERT_EQ(1, map->size());
+    ASSERT_EQ(1u, map->size());
     er = (*map)["2"];
     EXPECT_EQ(CacheEvent::invalidate, er.ev);
     EXPECT_EQ(2, er.stats.size());
@@ -1985,7 +1988,7 @@ TEST(PersistentStringCacheImpl, event_handlers)
     map->clear();
 
     c.invalidate();
-    ASSERT_EQ(2, map->size());
+    ASSERT_EQ(2u, map->size());
     er = (*map)["4"];
     EXPECT_EQ(CacheEvent::invalidate, er.ev);
     EXPECT_EQ(1, er.stats.size());
@@ -2003,7 +2006,7 @@ TEST(PersistentStringCacheImpl, event_handlers)
     c.put("1", "1");
     map = &event_maps[CacheEvent::touch];
     c.touch("1");
-    ASSERT_EQ(1, map->size());
+    ASSERT_EQ(1u, map->size());
     er = (*map)["1"];
     EXPECT_EQ(CacheEvent::touch, er.ev);
     EXPECT_EQ(1, er.stats.size());
@@ -2016,7 +2019,7 @@ TEST(PersistentStringCacheImpl, event_handlers)
 
     map = &event_maps[CacheEvent::miss];
     c.get(bad_key, val);
-    ASSERT_EQ(1, map->size());
+    ASSERT_EQ(1u, map->size());
     er = (*map)[bad_key];
     EXPECT_EQ(CacheEvent::miss, er.ev);
     EXPECT_EQ(0, er.stats.size());
@@ -2031,11 +2034,11 @@ TEST(PersistentStringCacheImpl, event_handlers)
         this_thread::sleep_for(chrono::milliseconds(5));
     }
     c.get(bad_key, val);  // Already expired, so we must get a miss.
-    ASSERT_EQ(1, map->size());
+    ASSERT_EQ(1u, map->size());
     er = (*map)[bad_key];
     EXPECT_EQ(CacheEvent::miss, er.ev);
     EXPECT_EQ(1, er.stats.size());
-    EXPECT_EQ(bad_key.size(), er.stats.size_in_bytes());
+    EXPECT_EQ(int(bad_key.size()), er.stats.size_in_bytes());
     c.invalidate();
     map->clear();
 
@@ -2048,9 +2051,9 @@ TEST(PersistentStringCacheImpl, event_handlers)
     c.invalidate(bad_key);  // Already expired, so we must get an invalidate, but not a miss.
 
     map = &event_maps[CacheEvent::miss];
-    ASSERT_EQ(0, map->size());
+    ASSERT_EQ(0u, map->size());
     map = &event_maps[CacheEvent::invalidate];
-    ASSERT_EQ(1, map->size());
+    ASSERT_EQ(1u, map->size());
     er = (*map)[bad_key];
     EXPECT_EQ(CacheEvent::invalidate, er.ev);
     EXPECT_EQ(0, er.stats.size());
@@ -2075,7 +2078,7 @@ TEST(PersistentStringCacheImpl, event_handlers)
     // Both entries have expired. Even though we asked for a trim_to(1),
     // both entries will be deleted as part of the trim_to().
     map = &event_maps[CacheEvent::evict_ttl];
-    ASSERT_EQ(2, map->size());
+    ASSERT_EQ(2u, map->size());
     er = (*map)["1"];
     EXPECT_EQ(CacheEvent::evict_ttl, er.ev);
     // Entry "1" expired first so, when it is deleted, entry "2" is still around.
@@ -2094,7 +2097,7 @@ TEST(PersistentStringCacheImpl, event_handlers)
     c.trim_to(0);
 
     map = &event_maps[CacheEvent::evict_lru];
-    ASSERT_EQ(2, map->size());
+    ASSERT_EQ(2u, map->size());
     er = (*map)["1"];
     EXPECT_EQ(CacheEvent::evict_lru, er.ev);
     // Entry "1" is oldest, so gets evicted first.

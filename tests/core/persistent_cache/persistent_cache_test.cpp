@@ -19,7 +19,11 @@
 #include <core/persistent_cache.h>
 
 #include <boost/filesystem.hpp>
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wctor-dtor-privacy"
 #include <gtest/gtest.h>
+#pragma GCC diagnostic pop
 
 using namespace std;
 using namespace core;
@@ -212,15 +216,15 @@ TEST(PersistentCache, IDCCache)
 
         typedef std::underlying_type<CacheEvent>::type EventValue;
 
-        EXPECT_EQ(0x7f, EventValue(AllCacheEvents));
-        EXPECT_EQ(0x7e, EventValue(~CacheEvent::get));
-        EXPECT_EQ(0x3, EventValue(CacheEvent::get | CacheEvent::put));
-        EXPECT_EQ(0x2, EventValue(AllCacheEvents & CacheEvent::put));
+        EXPECT_EQ(0x7fu, EventValue(AllCacheEvents));
+        EXPECT_EQ(0x7eu, EventValue(~CacheEvent::get));
+        EXPECT_EQ(0x3u, EventValue(CacheEvent::get | CacheEvent::put));
+        EXPECT_EQ(0x2u, EventValue(AllCacheEvents & CacheEvent::put));
         CacheEvent v = CacheEvent::get | CacheEvent::put;
         v |= CacheEvent::invalidate;
-        EXPECT_EQ(0x7, EventValue(v));
+        EXPECT_EQ(0x7u, EventValue(v));
         v &= ~CacheEvent::get;
-        EXPECT_EQ(0x6, EventValue(v));
+        EXPECT_EQ(0x6u, EventValue(v));
 
         // Loader methods
 

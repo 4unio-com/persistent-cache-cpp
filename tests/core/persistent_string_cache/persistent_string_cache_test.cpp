@@ -19,7 +19,11 @@
 #include <core/persistent_string_cache.h>
 
 #include <boost/filesystem.hpp>
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wctor-dtor-privacy"
 #include <gtest/gtest.h>
+#pragma GCC diagnostic pop
 
 #include <thread>
 
@@ -145,7 +149,7 @@ TEST(PersistentStringCache, stats)
         auto hist = s.histogram();
         for (unsigned i = 0; i < hist.size(); ++i)
         {
-            EXPECT_EQ(0, hist[i]);  // Other bins must still be empty.
+            EXPECT_EQ(0u, hist[i]);  // Other bins must still be empty.
         }
     }
 
