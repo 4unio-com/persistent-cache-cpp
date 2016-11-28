@@ -1,5 +1,3 @@
-find_package(GMock)
-
 add_subdirectory(copyright)
 add_subdirectory(core)
 add_subdirectory(headers)
