@@ -1,6 +1,6 @@
 include(FindPkgConfig)
-find_package(Boost COMPONENTS system filesystem)
 find_package(GMock)
+find_package(Boost COMPONENTS system filesystem)
 
 set(TESTLIBS ${LIBNAME} boost_filesystem boost_system leveldb gtest_main)
 
