@@ -1,7 +1,8 @@
 include(FindPkgConfig)
+find_package(GMock)
 find_package(Boost COMPONENTS system filesystem)
 
-set(TESTLIBS ${LIBNAME} boost_filesystem boost_system leveldb gtest)
+set(TESTLIBS ${LIBNAME} boost_filesystem boost_system leveldb gtest_main)
 
 add_subdirectory(persistent_cache)
 add_subdirectory(persistent_string_cache)
