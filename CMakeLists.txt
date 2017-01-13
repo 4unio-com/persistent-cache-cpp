@@ -82,8 +82,7 @@ endif()
 include(CTest)
 enable_testing()
 
-include(EnableCoverageReport)
-
+find_package(CoverageReport)
 find_package(Boost COMPONENTS filesystem REQUIRED)
 find_package(Threads REQUIRED)
 
@@ -107,7 +106,7 @@ enable_coverage_report(
         ${UNIT_TEST_TARGETS}
 )
 
-include(UseDoxygen OPTIONAL)
+find_package(DoxygenBuilder)
 
 file(GLOB public_headers ${CMAKE_SOURCE_DIR}/include/core/*.h)
 add_doxygen(
